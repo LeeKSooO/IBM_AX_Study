@@ -1,0 +1,16 @@
+[
+    {
+        "id": "id001",
+        "password": "pwd001",
+        "name": "홍길동",
+        "phone": "010-1234-5678",
+        "email": "quia@et.suscipit.com"
+    },
+    {
+        "id": "id002",
+        "password": "pwd002",
+        "name": "고길동",
+        "phone": "010-9876-5432",
+        "email": "mrKoh@hello.com"
+    }
+]
