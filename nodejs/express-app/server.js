@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt'); // password decryption
 const app = express();
 const PORT = 3000;
 
@@ -38,35 +39,58 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
-// Log-in
-app.post('/login', async(req, res) => {
+// Password Hashing When Post User(Add User)
+app.post('/users', async(req, res) => {
   const { username, password } = req.body;
-  const user = await User.findOne({username, password});
-  if (user) {
-    res.json({message:'로그인 성공', userId: user._id});
-  } else {
-    res.status(401).json({message:'ID 또는 Password Error'});
-  }
-});
-
-// Add Users
-app.post('/Users', async(req, res)=> {
-  const { username, password } = req.body;
-  const newUser = new User({ username, password });
+  const hashed = await bcrypt.hash(password, 10);
+  const newUser = new User({ username, password: hashed });
   await newUser.save();
   res.status(201).json(newUser);
+})
+
+// Log-in with jwt token
+const jwt = require('jsonwebtoken');
+const JWT_SECRET = 'your_secret_key';
+
+app.post('/login', async(req, res) => {
+  const { username, password } = req.body;
+  const user = await User.findOne({ username });
+  if(!user) return res.status(401).json({ message: '유저 없음' });
+
+  const isMatch = await bcrypt.compare(password, user.password);
+  if(!isMatch) return res.status(401).json({ message: '비밀번호 오류' });
+
+  // JWT TOKEN 생성
+  const token = jwt.sign(
+    { userId: user._id, username: user.username },
+    JWT_SECRET,
+    { expiresIn: '1h' }
+  );
+
+  res.json({ message: '로그인 성공', token });
 });
 
-// find all users
+// Middleware of Authentication
+const auth = (req, res, next) => {
+  const header = req.headers.authorization;
+  console.log(header);
+  if(!header) return res.status(401).json({ message: '토큰 없음' });
+  
+  const token = header.split(' ')[1]; // 뒷 토큰
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch(err) {
+    res.status(403).json({ message: '유효하지 않은 토큰' });
+  }
+};
+
+// find user
 app.get('/users', async(req, res) => {
   const users = await User.find();
+  console.log(`users : ${users}`)
   res.json(users);
-});
-
-// find some user
-app.get('/users/:id', async(req, res)=> {
-  const user = await User.findById(req.params.id);
-  user ? res.json(user) : res.status(404).json({message: '사용자 없음'});
 });
 
 // update user
@@ -81,17 +105,10 @@ app.put('/users/:id', async(req, res) => {
 });
 
 // delete user
-app.delete('/users/:id', async(req, res) => {
-  const deleted = await User.findByIdAndDelete(req.params.id);
+app.delete('/users/:username', async(req, res) => {
+  const deleted = await User.findOneAndDelete({username: req.params.username});
   deleted ? res.json({message: '삭제됨'}) : res.status(404).json({message:'삭제할 사용자 없음'});
 });
-
-// 기본 라우트(ex : localhost:3000 -> index.html)
-/*
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/public/index.html');
-});
-*/
 
 // 3000번 포트로 서버 실행
 app.listen(PORT, () => {
