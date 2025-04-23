@@ -13,11 +13,17 @@ public/ 폴더를 웹에서 바로 접근 가능하게 함
 */
 //app.use(express.static('public'));
 
+// 기본 라우트 (GET /)
+app.get('/', (req, res) => {
+  res.send('Welcome to the Express API Server!');
+});
+
+
 // JSON 파싱 미들웨어
 app.use(express.json());
 
 // MongoDB Connect
-mongoose.connect('mongodb://localhost:27017/myapp', {
+mongoose.connect('mongodb://localhost:27017/myDB', {
   useNewUrlParser:true,
   useUnifiedTopology: true
 })
@@ -89,5 +95,5 @@ app.get('/', (req, res) => {
 
 // 3000번 포트로 서버 실행
 app.listen(PORT, () => {
-  console.log('✅ 서버 실행 중: http://localhost:${PORT}');
+  console.log(`✅ 서버 실행 중: http://localhost:${PORT}`);
 });
