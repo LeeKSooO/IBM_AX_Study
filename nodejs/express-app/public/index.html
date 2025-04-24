@@ -1,69 +1,50 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
-  <meta charset="utf-8" />
-  <title>Hello Ajax</title>
-  <script type="text/javascript">
-    var httpRequest = null;
-
-    function getXMLHttpRequest() {
-      if (window.ActiveXObject) { // for IE
-        var objectNames = [
-          "MSXML2.XMLHTTP.5.0",
-          "MSXML2.XMLHTTP.4.0",
-          "MSXML2.XMLHTTP.3.0",
-          "MSXML2.XMLHTTP",
-          "Microsoft.XMLHTTP"
-        ];
-        for (var i = 0; i < objectNames.length; i++) {
-          try {
-            return new ActiveXObject(objectNames[i]);
-          } catch (e) { }
-        }
-        return null;
-      } else if (window.XMLHttpRequest) { // for non-IE
-        try {
-          return new XMLHttpRequest();
-        } catch (e) {
-          return null;
-        }
-      }
-      return null;
+  <meta charset="UTF-8">
+  <title>StateMachine 유저 관리</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f4f4f4;
     }
-
-    function doConnect(url) {
-      httpRequest = getXMLHttpRequest();
-      httpRequest.onreadystatechange = cbConnect;
-      httpRequest.open("GET", url, true);
-      httpRequest.send(null);
-
-      function cbConnect() {
-        if (httpRequest.readyState == 4) {
-          if (httpRequest.status == 200) {
-            alert(httpRequest.responseText);
-          } else {
-            alert("실패: " + httpRequest.status);
-          }
-        }
-      }
+    h1 {
+      color: #333;
     }
-  </script>
+    #state {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    #menu button, #form button {
+      display: block;
+      margin: 5px 0;
+      padding: 8px 12px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    #menu button:hover, #form button:hover {
+      background-color: #0056b3;
+    }
+    #form input {
+      display: block;
+      margin-bottom: 8px;
+      padding: 6px;
+      width: 200px;
+    }
+    #form {
+      margin-top: 20px;
+    }
+  </style>
 </head>
-
 <body>
-  <table border="1" cellpadding="5">
-    <tr align="center">
-      <td><input type="button" value="enc.txt" onclick="doConnect('enc.txt')" /></td>
-      <td><input type="button" value="enc2.txt" onclick="doConnect('enc2.txt')" /></td>
-      <td><input type="button" value="enc.php" onclick="doConnect('enc.php')" /></td>
-      <td><input type="button" value="enc2.php" onclick="doConnect('enc2.php')" /></td>
-    </tr>
-    <tr align="center">
-      <td>UTF-8</td>
-      <td>EUC-KR</td>
-      <td>UTF-8</td>
-      <td>EUC-KR</td>
-    </tr>
-  </table>
+  <h1>유저 관리 시스템</h1>
+  <div id="state">현재 상태: default</div>
+  <div id="menu"></div>
+  <div id="form"></div>
+  <script src="script.js"></script>
 </body>
 </html>
