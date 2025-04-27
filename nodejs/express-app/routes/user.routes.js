@@ -7,25 +7,25 @@ const userController = require("../controllers/user.controller");
 const auth = require('../middleware/auth');
 
 
-// register user
+// register user(sign up)
 router.post('/', userController.createUser);
+
 // log-in
 router.post('/login', userController.login);
+
 // log-out
+router.delete('/logout', userController.logout);
 
 // change password
+router.patch('/me/password', auth, userController.changePW);
+
+// select own Info
+router.get('/me', auth, userController.getMyInfo);
+
+// update user info
+router.patch('/me', auth, userController.updateMyInfo);
 
 // withdraw
-
-// select *(users)
-router.get('/', userController.getUsers);
-
-// select user
-
-// update user
-router.put('/:id', userController.updateUser);
-// delete user
-router.delete('/:username', userController.deleteUser);
-
+router.delete('/withdraw', auth, userController.withdraw);
 
 module.exports = router;
