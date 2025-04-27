@@ -1,40 +1,50 @@
-// stateMachine.js
+// client/stateMachine.js
+
+let currentState = "default";
+let token = null; // 인증 토큰 저장
 
 const states = {
-    default:     { ADD: "add", TERMINATE: "terminate" },
-    add:         { ADD: "add", FIND: "find", DELETE: "delete", LOGIN: "log-in" },
-    find:        { ADD: "add", FIND: "find", DELETE: "delete", LOGIN: "log-in" },
-    delete:      { ADD: "add", FIND: "find", DELETE: "delete", LOGIN: "log-in" },
-    "log-in":    { LOGOUT: "log-out", TERMINATE: "terminate" },
-    "log-out":   { ADD: "add", FIND: "find", DELETE: "delete", LOGIN: "log-in" }
-  };
-  
-  let currentState = "default";
-  let token = null;
-  
-  function transition(action) {
-    const upperAction = action.toUpperCase();
-    const next = states[currentState]?.[upperAction];
-    if (next) {
-      currentState = next;
-      //console.log(`\u{1F4C8} 상태 전이: ${currentState}`);
-    } else {
-      //console.log("\u274C 잘못된 상태 전이");
-    }
-    return currentState;
+  default: {
+    SIGNUP: "unauthenticated",
+    LOGIN: "authenticated",
+    TERMINATE: "terminate"
+  },
+  authenticated: {
+    LOGOUT: "unauthenticated",
+    CHANGEPW: "authenticated",
+    GETMYINFO: "authenticated",
+    UPDATEMYINFO: "authenticated",
+    WITHDRAW: "default",
+    TERMINATE: "terminate"
+  },
+  unauthenticated: {
+    LOGIN: "authenticated",
+    SIGNUP: "unauthenticated",
+    TERMINATE: "terminate"
   }
-  
-  function setToken(newToken) {
-    token = newToken;
-    console.log("\u{1F511} 토큰 저장 완료");
+};
+
+function transition(action) {
+  const upperAction = action.toUpperCase();
+  const next = states[currentState]?.[upperAction];
+  if (next) {
+    currentState = next;
+  } else {
+    console.log("❌ 잘못된 상태 전이");
   }
-  
-  function getToken() {
-    return token;
-  }
-  
-  function getState() {
-    return currentState;
-  }
-  
-  module.exports = { transition, getState, setToken, getToken };
+  return currentState;
+}
+
+function setToken(newToken) {
+  token = newToken;
+}
+
+function getToken() {
+  return token;
+}
+
+function getState() {
+  return currentState;
+}
+
+module.exports = { transition, setToken, getToken, getState };
