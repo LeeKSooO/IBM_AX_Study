@@ -1,8 +1,9 @@
 // mongoose는 mongoDB를 쉽게 다룰 수 있도록 도와주는 ODM(Object Document Mapper lib)
 const mongoose = require('mongoose');
+require('dotenv').config();
 
 // Connect DB
-mongoose.connect('mongodb://127.0.0.1:27017/myDB', {
+mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 })

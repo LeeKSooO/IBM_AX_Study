@@ -1,11 +1,11 @@
 const express = require("express");
-const mongoose = require("mongoose");
 const userRoutes = require("./routes/user.routes");
 const adminRoutes = require("./routes/admin.routes");
+require('dotenv').config();
 
 // app < Express App Instance, 이 객체를 통해 서버 라우팅, 미들웨어 등록, 리스닝 포트 설정 등을 수행
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // DB Config
 require("./database/db");
