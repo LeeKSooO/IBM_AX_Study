@@ -1,13 +1,27 @@
-# 가상환경
-venv/
+# Node modules
+node_modules/
 
-# Python 캐시 파일
-__pycache__/
-*.pyc
-
-# 환경설정 파일
+# 환경 변수 파일
 .env
 
-# 운영체제별 파일
+# 로그 파일
+*.log
+
+# Mac 운영체제 임시 파일
 .DS_Store
+
+# Windows 운영체제 임시 파일
 Thumbs.db
+
+# VSCode 에디터 설정 폴더
+.vscode/
+
+# client 쪽 임시 폴더
+client/temp/
+
+# public 폴더 안 임시 폴더
+public/temp/
+public/cache/
+
+# Docker PID 파일 (옵션)
+*.pid
